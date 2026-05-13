@@ -56,32 +56,34 @@
         .item-producto:hover { background: #f5f5f5; }
 
         /* BOTONES */
-        .botones { display: flex; gap: 12px; margin-top: 10px; }
+        .botones { display: flex; gap: 12px; margin-top: 10px; flex-wrap: wrap; }
         button {
-            flex: 1; padding: 14px; border-radius: 12px; font-weight: bold;
+            flex: 1; min-width: 150px; padding: 14px; border-radius: 12px; font-weight: bold;
             cursor: pointer; transition: 0.2s; border: none; font-size: 14px;
         }
         .btn-generar { background: black; color: white; }
         .btn-imprimir { background: white; border: 2px solid black; color: black; }
+        .btn-borrar { background: #ff4444; color: white; }
         button:hover { opacity: 0.8; transform: translateY(-1px); }
 
-        /* PREVIEW */
-        .preview-area { background: white; border-radius: 24px; padding: 25px; border: 1px solid #e2e2e2; }
+        /* PREVIEW AREA */
+        .preview-area { background: white; border-radius: 24px; padding: 25px; border: 1px solid #e2e2e2; min-height: 200px; }
         #contenedorEtiquetas { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
 
         /* DISEÑO ETIQUETA */
         .etiqueta {
             background: white; border: 3px solid #000; border-radius: 18px; position: relative;
             overflow: hidden; display: flex; flex-direction: column; padding: 15px; color: black;
+            page-break-inside: avoid;
         }
         .barra-superior { width: 100%; height: 12px; background: black; position: absolute; top: 0; left: 0; }
         .logo { width: 45px; position: absolute; top: 18px; right: 18px; }
         .codigo { font-size: 14px; font-weight: bold; color: #444; }
-        .producto { font-weight: 900; width: 80%; margin-top: 15px; line-height: 1.1; text-transform: uppercase; }
-        .precio { font-weight: 900; position: absolute; left: 18px; bottom: 18px; }
+        .producto { font-weight: 900; width: 80%; margin-top: 15px; line-height: 1.1; text-transform: uppercase; word-wrap: break-word; }
+        .precio { font-weight: 900; position: absolute; left: 18px; bottom: 18px; line-height: 1; }
 
         @media print {
-            .header, .config-grid, .btn-print, .botones { display: none !important; }
+            .header, .config-grid, .botones { display: none !important; }
             body { background: white; padding: 0; }
             .preview-area { border: none; padding: 0; }
         }
@@ -93,7 +95,7 @@
     <div class="header">
         <div>
             <div class="titulo">LICOEXPRESS</div>
-            <div class="subtitulo">Generador de etiquetas Licoexpress (by: Steven Ordoñez)</div>
+            <div class="subtitulo">Generador de etiquetas (by: Steven Ordoñez)</div>
         </div>
         <div class="firma">Creado por: Steven Ordoñez</div>
     </div>
@@ -120,12 +122,13 @@
             </div>
             <div class="botones">
                 <button class="btn-generar" onclick="generarEtiquetas()">Generar Etiquetas</button>
+                <button class="btn-borrar" onclick="borrarTodo()">Borrar Todo</button>
                 <button class="btn-imprimir" onclick="window.print()">Imprimir</button>
             </div>
         </div>
 
         <div class="card">
-            <div class="card-title">📏 Medidas DE ETIQUETA (cm)</div>
+            <div class="card-title">📏 Medidas de Etiqueta (cm)</div>
             <div class="input-group">
                 <label>Ancho</label>
                 <input type="number" id="ancho" value="10" step="0.1">
@@ -155,9 +158,9 @@
 </div>
 
 <script>
-    // Base de datos restaurada
+    // Base de datos (acortada para el ejemplo, pero puedes pegar la tuya completa)
     const productos = [
-       {
+        {
         "codigo": "000001",
         "nombre": "3PACK FUZE TEA SURTIDO",
         "precio": "$7.200"
@@ -5856,37 +5859,44 @@
                 document.getElementById('precio').value = p.precio;
                 document.getElementById('codigo').value = p.codigo;
                 lista.innerHTML = '';
-                generarEtiquetas();
             };
             lista.appendChild(div);
         });
     });
 
+    // Función que ACUMULA etiquetas
     function generarEtiquetas() {
         const contenedor = document.getElementById("contenedorEtiquetas");
-        const n = document.getElementById("nombre").value || "PRODUCTO";
-        const p = document.getElementById("precio").value || "$0";
-        const c = document.getElementById("codigo").value || "000";
-        const cant = document.getElementById("cantidad").value;
+        const nombre = document.getElementById("nombre").value || "PRODUCTO";
+        const precio = document.getElementById("precio").value || "$0";
+        const codigo = document.getElementById("codigo").value || "000";
+        const cant = parseInt(document.getElementById("cantidad").value);
         const w = document.getElementById("ancho").value;
         const h = document.getElementById("alto").value;
         const tProd = document.getElementById("tamanoProducto").value;
         const tPrec = document.getElementById("tamanoPrecio").value;
 
-        contenedor.innerHTML = "";
+        let nuevasEtiquetas = "";
         for(let i=0; i<cant; i++) {
-            contenedor.innerHTML += `
-                <div class="etiqueta" style="width:${w}cm; height:${h}cm;">
+            nuevasEtiquetas += `
+                <div class="etiqueta" style="width:${w}cm; height:${h}cm; margin: 5px;">
                     <div class="barra-superior"></div>
                     <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTWEOpuUVI7MdP6F4bFWIGUq_VxAyKJXjrtPA&s" class="logo">
-                    <div class="codigo">COD: ${c}</div>
-                    <div class="producto" style="font-size:${tProd}px;">${n}</div>
-                    <div class="precio" style="font-size:${tPrec}px;">${p}</div>
+                    <div class="codigo">COD: ${codigo}</div>
+                    <div class="producto" style="font-size:${tProd}px;">${nombre}</div>
+                    <div class="precio" style="font-size:${tPrec}px;">${precio}</div>
                 </div>`;
         }
+        
+        // El operador += permite que se vean las anteriores y las nuevas
+        contenedor.innerHTML += nuevasEtiquetas;
     }
 
-    window.onload = generarEtiquetas;
+    function borrarTodo() {
+        if(confirm("¿Deseas limpiar todo el pliego de etiquetas?")) {
+            document.getElementById("contenedorEtiquetas").innerHTML = "";
+        }
+    }
 </script>
 
 </body>
