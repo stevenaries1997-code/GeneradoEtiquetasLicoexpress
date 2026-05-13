@@ -1,4 +1,168 @@
-{
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generador de Etiquetas - LICOEXPRESS</title>
+    <style>
+        html { zoom: 0.90; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, Helvetica, sans-serif; }
+        body { background: #f1f3f5; padding: 15px; color: #111; }
+        .app { max-width: 1400px; margin: auto; }
+
+        /* HEADER & FIRMA */
+        .header {
+            background: white; border-radius: 18px; padding: 18px;
+            margin-bottom: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            border: 1px solid #e2e2e2;
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .titulo { font-size: 28px; font-weight: 900; }
+        .subtitulo { color: #666; margin-top: 4px; font-size: 13px; }
+        .firma { font-size: 24px; color: #111; font-family: cursive; font-style: italic; font-weight: bold; }
+
+        /* REJILLA DE CONFIGURACIÓN */
+        .config-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .card {
+            background: white; padding: 20px; border-radius: 18px;
+            border: 1px solid #e2e2e2; box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+        }
+        .card-title {
+            font-weight: 900; font-size: 14px; margin-bottom: 15px; color: #333;
+            text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 2px solid #f1f3f5; padding-bottom: 8px;
+        }
+
+        .input-group { margin-bottom: 12px; position: relative; }
+        .input-group label { display: block; font-size: 11px; font-weight: 800; margin-bottom: 5px; color: #555; text-transform: uppercase; }
+        .input-group input {
+            width: 100%; padding: 12px; border: 2px solid #eee; border-radius: 12px;
+            font-size: 14px; font-weight: 600; transition: 0.2s;
+        }
+        .input-group input:focus { outline: none; border-color: #111; }
+
+        /* AUTOCOMPLETADO */
+        .lista-productos {
+            position: absolute; top: 100%; left: 0; width: 100%; background: white;
+            border: 1px solid #ddd; border-radius: 12px; max-height: 250px;
+            overflow-y: auto; z-index: 999; box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        .item-producto { padding: 10px; cursor: pointer; border-bottom: 1px solid #eee; font-size: 13px; }
+        .item-producto:hover { background: #f5f5f5; }
+
+        /* BOTONES */
+        .botones { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+        button {
+            flex: 1; min-width: 110px; padding: 12px; border-radius: 12px; font-weight: bold;
+            cursor: pointer; transition: 0.2s; border: none; font-size: 13px;
+        }
+        .btn-generar { background: black; color: white; }
+        .btn-borrar-ultima { background: #555; color: white; } /* Botón Borrar (una) */
+        .btn-borrar-todo { background: #ff4444; color: white; } /* Botón Eliminar Todo */
+        .btn-imprimir { background: white; border: 2px solid black; color: black; }
+        button:hover { opacity: 0.8; transform: translateY(-1px); }
+
+        /* PREVIEW AREA */
+        .preview-area { background: white; border-radius: 24px; padding: 25px; border: 1px solid #e2e2e2; min-height: 200px; }
+        #contenedorEtiquetas { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
+
+        /* DISEÑO ETIQUETA */
+        .etiqueta {
+            background: white; border: 3px solid #000; border-radius: 18px; position: relative;
+            overflow: hidden; display: flex; flex-direction: column; padding: 15px; color: black;
+            page-break-inside: avoid;
+        }
+        .barra-superior { width: 100%; height: 12px; background: black; position: absolute; top: 0; left: 0; }
+        .logo { width: 45px; position: absolute; top: 18px; right: 18px; }
+        .codigo { font-size: 14px; font-weight: bold; color: #444; }
+        .producto { font-weight: 900; width: 80%; margin-top: 15px; line-height: 1.1; text-transform: uppercase; word-wrap: break-word; }
+        .precio { font-weight: 900; position: absolute; left: 18px; bottom: 18px; line-height: 1; }
+
+        @media print {
+            .header, .config-grid, .botones { display: none !important; }
+            body { background: white; padding: 0; }
+            .preview-area { border: none; padding: 0; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="app">
+    <div class="header">
+        <div>
+            <div class="titulo">LICOEXPRESS</div>
+            <div class="subtitulo">Generador de etiquetas (by: Steven Ordoñez)</div>
+        </div>
+        <div class="firma">Creado por: Steven Ordoñez</div>
+    </div>
+
+    <div class="config-grid">
+        <div class="card">
+            <div class="card-title">📦 Datos del Producto</div>
+            <div class="input-group">
+                <label>Nombre del Producto</label>
+                <input type="text" id="nombre" placeholder="Buscar producto..." autocomplete="off">
+                <div id="listaProductos" class="lista-productos"></div>
+            </div>
+            <div class="input-group">
+                <label>Precio ($)</label>
+                <input type="text" id="precio" placeholder="$ 0.000">
+            </div>
+            <div class="input-group">
+                <label>Código</label>
+                <input type="text" id="codigo" placeholder="000">
+            </div>
+            <div class="input-group">
+                <label>Cantidad</label>
+                <input type="number" id="cantidad" value="1" min="1">
+            </div>
+            <div class="botones">
+                <button class="btn-generar" onclick="generarEtiquetas()">Generar</button>
+                <button class="btn-borrar-ultima" onclick="borrarUltima()">Borrar</button>
+                <button class="btn-borrar-todo" onclick="borrarTodo()">Eliminar Todo</button>
+                <button class="btn-imprimir" onclick="window.print()">Imprimir</button>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-title">📏 Medidas de Etiqueta (cm)</div>
+            <div class="input-group">
+                <label>Ancho</label>
+                <input type="number" id="ancho" value="10" step="0.1">
+            </div>
+            <div class="input-group">
+                <label>Alto</label>
+                <input type="number" id="alto" value="6" step="0.1">
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-title">🔠 Ajuste de Textos</div>
+            <div class="input-group">
+                <label>Tamaño Nombre (px)</label>
+                <input type="number" id="tamanoProducto" value="28">
+            </div>
+            <div class="input-group">
+                <label>Tamaño Precio (px)</label>
+                <input type="number" id="tamanoPrecio" value="90">
+            </div>
+        </div>
+    </div>
+
+    <div class="preview-area">
+        <div id="contenedorEtiquetas"></div>
+    </div>
+</div>
+
+<script>
+    // Tu base de datos de productos (Se mantiene completa según tu archivo original)
+    const productos = [
+      {
         "codigo": "000001",
         "nombre": "3PACK FUZE TEA SURTIDO",
         "precio": "$7.200"
@@ -5678,3 +5842,69 @@
         "nombre": "SPRITE 250 ML",
         "precio": "$924"
     }
+    ];
+
+    const inputNombre = document.getElementById('nombre');
+    const lista = document.getElementById('listaProductos');
+
+    inputNombre.addEventListener('input', () => {
+        const val = inputNombre.value.toUpperCase();
+        lista.innerHTML = '';
+        if (!val) return;
+
+        productos.filter(p => p.nombre.includes(val)).forEach(p => {
+            const div = document.createElement('div');
+            div.className = 'item-producto';
+            div.innerHTML = p.nombre;
+            div.onclick = () => {
+                inputNombre.value = p.nombre;
+                document.getElementById('precio').value = p.precio;
+                document.getElementById('codigo').value = p.codigo;
+                lista.innerHTML = '';
+            };
+            lista.appendChild(div);
+        });
+    });
+
+    // Función que ACUMULA etiquetas sin borrar las anteriores
+    function generarEtiquetas() {
+        const contenedor = document.getElementById("contenedorEtiquetas");
+        const nombre = document.getElementById("nombre").value || "PRODUCTO";
+        const precio = document.getElementById("precio").value || "$0";
+        const codigo = document.getElementById("codigo").value || "000";
+        const cant = parseInt(document.getElementById("cantidad").value);
+        const w = document.getElementById("ancho").value;
+        const h = document.getElementById("alto").value;
+        const tProd = document.getElementById("tamanoProducto").value;
+        const tPrec = document.getElementById("tamanoPrecio").value;
+
+        for(let i=0; i<cant; i++) {
+            contenedor.innerHTML += `
+                <div class="etiqueta" style="width:${w}cm; height:${h}cm; margin: 5px;">
+                    <div class="barra-superior"></div>
+                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTWEOpuUVI7MdP6F4bFWIGUq_VxAyKJXjrtPA&s" class="logo">
+                    <div class="codigo">COD: ${codigo}</div>
+                    <div class="producto" style="font-size:${tProd}px;">${nombre}</div>
+                    <div class="precio" style="font-size:${tPrec}px;">${precio}</div>
+                </div>`;
+        }
+    }
+
+    // Borra solo la ÚLTIMA etiqueta generada
+    function borrarUltima() {
+        const contenedor = document.getElementById("contenedorEtiquetas");
+        if (contenedor.lastElementChild) {
+            contenedor.removeChild(contenedor.lastElementChild);
+        }
+    }
+
+    // Borra TODO el pliego
+    function borrarTodo() {
+        if(confirm("¿Seguro que quieres eliminar todas las etiquetas del pliego?")) {
+            document.getElementById("contenedorEtiquetas").innerHTML = "";
+        }
+    }
+</script>
+
+</body>
+</html>
