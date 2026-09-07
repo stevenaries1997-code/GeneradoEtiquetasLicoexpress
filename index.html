@@ -93,7 +93,6 @@
 
 /* ============================================================
    HABLADOR - MÓDULO INDEPENDIENTE CON ESTILO EXACTO SOLICITADO
-   No altera los estilos del generador original.
    ============================================================ */
 .navegacion-hablador{
     max-width:1400px;
@@ -134,7 +133,7 @@
 .hablador-btn-volver{background:#555;color:#fff;flex:0 0 auto}
 .hablador-editor-layout{
     display:grid;
-    grid-template-columns:340px minmax(600px,1fr);
+    grid-template-columns:360px minmax(600px,1fr);
     gap:18px;
     align-items:start;
 }
@@ -177,18 +176,61 @@
 .hablador-grid-2 input,.hablador-grid-2 select,.hablador-grid-4 input{
     width:100%;padding:8px;border:1px solid #ddd;border-radius:8px
 }
-.hablador-botonera{display:flex;gap:8px;margin-top:15px}
-.hablador-botonera button{min-width:0}
-.hablador-btn-imprimir{background:#111;color:#fff}
-.hablador-btn-limpiar{background:#eee;color:#111}
+.hablador-botonera{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;}
+.hablador-botonera button{min-width:0; padding: 10px;}
+.hablador-btn-imprimir{background:#111;color:#fff; flex: 2;}
+.hablador-btn-agregar{background:#007bff;color:#fff; width: 100%; margin-top: 5px; font-size: 13px; padding: 12px;}
+.hablador-btn-limpiar{background:#eee;color:#111; flex: 1;}
 .hablador-zona{
     background:#e9ecef;border-radius:18px;padding:20px;
-    overflow:auto;display:flex;justify-content:center
+    overflow:auto;display:flex;flex-direction: column; align-items:center; gap: 20px;
 }
 
-/* =========================================================
-   ESTILOS EXACTOS DEL DISEÑO DE HABLADOR ADJUNTADO
-   ========================================================= */
+/* LISTA DE HABLADORES AGREGADOS */
+.habladores-lista-contenedor {
+    margin-top: 15px;
+    border-top: 2px solid #111;
+    padding-top: 10px;
+}
+.habladores-lista-titulo {
+    font-size: 12px;
+    font-weight: 800;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.hablador-item-lista {
+    background: #f8f9fa;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 8px 10px;
+    margin-bottom: 6px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 11px;
+}
+.hablador-item-lista span {
+    font-weight: bold;
+    max-width: 220px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.hablador-item-btn-eliminar {
+    background: #ff4444;
+    color: white;
+    border: none;
+    padding: 4px 8px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 10px;
+    min-width: 0;
+}
+
+/* ESTILOS EXACTOS DEL DISEÑO DE HABLADOR ADJUNTADO */
 .hablador-hoja {
     width: 215.9mm;
     height: 279.4mm;
@@ -201,6 +243,7 @@
     box-sizing: border-box;
     font-family: 'Montserrat', 'Arial', sans-serif;
     color: #111;
+    flex-shrink: 0;
 }
 
 /* Marco doble de alta gama */
@@ -312,7 +355,7 @@
 }
 
 /* Disposición por defecto exacta según la imagen */
-#habElNombre {
+.hablador-nombre {
     left: 20mm;
     top: 45mm;
     width: 175mm;
@@ -325,7 +368,7 @@
     letter-spacing: -0.5px;
 }
 
-#habElCodigo {
+.hablador-codigo {
     left: 58mm;
     top: 155mm;
     width: 100mm;
@@ -339,7 +382,7 @@
     letter-spacing: 2px;
 }
 
-#habElCantidad {
+.hablador-cantidad {
     left: 48mm;
     top: 195mm;
     width: 120mm;
@@ -371,12 +414,13 @@
     body.hablador-imprimir #moduloHablador .hablador-cabecera,
     body.hablador-imprimir #moduloHablador .hablador-panel{display:none!important}
     body.hablador-imprimir #moduloHablador .hablador-zona{
-        display:block!important;padding:0!important;background:#fff!important
+        display:flex!important;flex-direction:column!important;padding:0!important;background:#fff!important;gap:0!important;
     }
     body.hablador-imprimir .hablador-hoja{
         box-shadow:none!important;
         margin:0!important;
         page-break-after: always;
+        break-after: page;
         -webkit-print-color-adjust: exact !important;
         print-color-adjust: exact !important;
     }
@@ -390,13 +434,13 @@
         -webkit-print-color-adjust: exact !important;
         print-color-adjust: exact !important;
     }
-    body.hablador-imprimir #habElCodigo{
+    body.hablador-imprimir .hablador-codigo{
         background: #f8f9fa !important;
         border: 2px solid #111116 !important;
         -webkit-print-color-adjust: exact !important;
         print-color-adjust: exact !important;
     }
-    body.hablador-imprimir #habElCantidad{
+    body.hablador-imprimir .hablador-cantidad{
         border-bottom: 3px solid #111116 !important;
         -webkit-print-color-adjust: exact !important;
         print-color-adjust: exact !important;
@@ -451,6 +495,16 @@
                 <input id="habCantidad" type="number" min="1" value="1">
             </div>
 
+            <button type="button" class="hablador-btn-agregar" onclick="agregarHabladorALaLista()">➕ AGREGAR HABLADOR A LA LISTA</button>
+
+            <!-- LISTA DE HABLADORES PARA IMPRIMIR -->
+            <div class="habladores-lista-contenedor">
+                <div class="habladores-lista-titulo">
+                    <span>Habladores en cola (<span id="habContadorLista">0</span>)</span>
+                </div>
+                <div id="habListaItems"></div>
+            </div>
+
             <div class="hablador-seccion">
                 <h3>Elemento seleccionado</h3>
                 <div class="hablador-field">
@@ -493,20 +547,14 @@
                 </div>
             </div>
 
-            <div class="hablador-estado" id="habEstado">Selecciona un elemento para editarlo.</div>
-            <div class="hablador-instruccion">
-                <b>Cómo usar:</b> haz clic en Descripción, Cantidad o Código y arrástralo directamente sobre la hoja.
-                La línea punteada representa los márgenes.
-            </div>
-
             <div class="hablador-botonera">
-                <button type="button" class="hablador-btn-imprimir" onclick="imprimirHablador()">🖨️ Imprimir</button>
+                <button type="button" class="hablador-btn-imprimir" onclick="imprimirTodosLosHabladores()">🖨️ Imprimir Todos</button>
                 <button type="button" class="hablador-btn-limpiar" onclick="limpiarHablador()">Limpiar</button>
             </div>
         </aside>
 
-        <section class="hablador-zona">
-            <div class="hablador-hoja" id="habHoja">
+        <section class="hablador-zona" id="habZonaContenedor">
+            <div class="hablador-hoja hab-hoja-principal" id="habHoja">
                 <div class="hablador-header-bar">LICOEXPRESS</div>
                 <div class="hablador-marco-profesional"></div>
                 <div class="hablador-marco-interior"></div>
@@ -514,21 +562,21 @@
                 <div class="hablador-area-segura" id="habMargenVisual"></div>
 
                 <!-- 1. NOMBRE / DESCRIPCIÓN DEL PRODUCTO -->
-                <div class="hablador-elemento seleccionado" id="habElNombre"
+                <div class="hablador-elemento seleccionado hablador-nombre" id="habElNombre"
                      data-elemento="nombre">
                     <span class="hablador-resize" aria-hidden="true"></span>
                     <span class="texto">TEQUILA 1800 SILVER 750 ML</span>
                 </div>
 
                 <!-- 2. CÓDIGO -->
-                <div class="hablador-elemento" id="habElCodigo"
+                <div class="hablador-elemento hablador-codigo" id="habElCodigo"
                      data-elemento="codigo">
                     <span class="hablador-resize" aria-hidden="true"></span>
                     <span class="texto">COD: 000997</span>
                 </div>
 
                 <!-- 3. CANTIDAD -->
-                <div class="hablador-elemento" id="habElCantidad"
+                <div class="hablador-elemento hablador-cantidad" id="habElCantidad"
                      data-elemento="cantidad">
                     <span class="hablador-resize" aria-hidden="true"></span>
                     <span class="texto">CANTIDAD: 1</span>
@@ -611,7 +659,6 @@
 </div>
 
 <script>
-    // Tu base de datos de productos (Se mantiene completa según tu archivo original)
     const productos = [
       {
     "codigo": "000067",
@@ -1067,894 +1114,247 @@
     "codigo": "000900",
     "nombre": "RON MEDELLIN 8 AÑOS 750 ML",
     "precio": "$69.310"
-  },
-  {
-    "codigo": "000901",
-    "nombre": "RON MEDELLIN 8 AÑOS MEDIA 375 ML",
-    "precio": "$36.861"
-  },
-  {
-    "codigo": "000902",
-    "nombre": "RON MEDELLIN DORADO BOTELLA 750 ML",
-    "precio": "$42.177"
-  },
-  {
-    "codigo": "000903",
-    "nombre": "RON MEDELLIN DORADO MEDIA 375 ML",
-    "precio": "$21.937"
-  },
-  {
-    "codigo": "000904",
-    "nombre": "RON MEDELLIN GRAN RESERVA 12 AÑOS 750 ML",
-    "precio": "$84.218"
-  },
-  {
-    "codigo": "000948",
-    "nombre": "SODA BRETAÑA FRIOPACK 300 ML",
-    "precio": "$1.801"
-  },
-  {
-    "codigo": "000963",
-    "nombre": "SPEED MAX LATA 310 ML",
-    "precio": "$1.400"
-  },
-  {
-    "codigo": "000970",
-    "nombre": "TEQUILA HERRADURA ORIGINAL REP. 750 ML",
-    "precio": "$187.830"
-  },
-  {
-    "codigo": "000971",
-    "nombre": "TEQUILA HERRADURA ORIGINAL AÑEJO 750 ML",
-    "precio": "$198.244"
-  },
-  {
-    "codigo": "000978",
-    "nombre": "STELLA ARTOIS NR 300 ML",
-    "precio": "$3.192"
-  },
-  {
-    "codigo": "000994",
-    "nombre": "TEQUILA 1800 AÑEJO 750 ML",
-    "precio": "$231.661"
-  },
-  {
-    "codigo": "000995",
-    "nombre": "TEQUILA 1800 CRISTALINO 700 ML",
-    "precio": "$282.513"
-  },
-  {
-    "codigo": "000996",
-    "nombre": "TEQUILA 1800 REPOSADO 750 ML",
-    "precio": "$194.251"
-  },
-  {
-    "codigo": "000997",
-    "nombre": "TEQUILA 1800 SILVER 750 ML",
-    "precio": "$168.000"
-  },
-  {
-    "codigo": "001003",
-    "nombre": "TEQUILA BANDOLERO REPOSADO 1000 ML",
-    "precio": "$66.251"
-  },
-  {
-    "codigo": "001004",
-    "nombre": "TEQUILA CAZADORES BLANCO 700 ML",
-    "precio": "$72.546"
-  },
-  {
-    "codigo": "001009",
-    "nombre": "TEQUILA DON JULIO BLANCO 700 ML",
-    "precio": "$214.094"
-  },
-  {
-    "codigo": "001011",
-    "nombre": "TEQUILA GRAN CENTENARIO AÑEJO 695 ML",
-    "precio": "$143.744"
-  },
-  {
-    "codigo": "001012",
-    "nombre": "TEQUILA GRAN CENTENARIO PLATA 700 ML",
-    "precio": "$102.480"
-  },
-  {
-    "codigo": "001013",
-    "nombre": "TEQUILA GRAN CENTENARIO RESPOSADO 700 ML",
-    "precio": "$102.480"
-  },
-  {
-    "codigo": "001015",
-    "nombre": "TEQUILA HERRADURA ORIGINAL REP 700 ML",
-    "precio": "$201.773"
-  },
-  {
-    "codigo": "001017",
-    "nombre": "TEQUILA HERRADURA ULTRA AÑEJO 750 ML",
-    "precio": "$280.812"
-  },
-  {
-    "codigo": "001018",
-    "nombre": "TEQUILA JIMADOR BLANCO 700 ML",
-    "precio": "$92.782"
-  },
-  {
-    "codigo": "001021",
-    "nombre": "TEQUILA JIMADOR REPOSADO 375 ML",
-    "precio": "$55.140"
-  },
-  {
-    "codigo": "001022",
-    "nombre": "TEQUILA JIMADOR REPOSADO 700 ML",
-    "precio": "$91.006"
-  },
-  {
-    "codigo": "001023",
-    "nombre": "TEQUILA JOSE CUERVO PLATINO 750 ML",
-    "precio": "$283.500"
-  },
-  {
-    "codigo": "001024",
-    "nombre": "TEQUILA JOSE CUERVO REPOSADO 375 ML",
-    "precio": "$49.644"
-  },
-  {
-    "codigo": "001025",
-    "nombre": "TEQUILA JOSE CUERVO REPOSADO 750 ML",
-    "precio": "$83.739"
-  },
-  {
-    "codigo": "001027",
-    "nombre": "TEQUILA J. CUERVO RVA DE LA FLIA 750 ML",
-    "precio": "$609.000"
-  },
-  {
-    "codigo": "001028",
-    "nombre": "TEQUILA JOSE CUERVO SILVER 750 ML",
-    "precio": "$81.690"
-  },
-  {
-    "codigo": "001032",
-    "nombre": "TEQUILA LEYENDA MILAGRO BARREL S.750 ML",
-    "precio": "$171.619"
-  },
-  {
-    "codigo": "001038",
-    "nombre": "TEQUILA MAESTRO DOBEL DIAMANTE REP 700 M",
-    "precio": "$279.300"
-  },
-  {
-    "codigo": "001039",
-    "nombre": "TEQUILA OLMECA ALTOS PLATA 700 ML",
-    "precio": "$161.638"
-  },
-  {
-    "codigo": "001042",
-    "nombre": "TEQUILA OLMECA BLANCO 700 ML",
-    "precio": "$67.848"
-  },
-  {
-    "codigo": "001046",
-    "nombre": "TEQUILA PATRON AÑEJO 700 ML",
-    "precio": "$248.850"
-  },
-  {
-    "codigo": "001049",
-    "nombre": "TEQUILA PATRON REPOSADO 700 - 750 ML",
-    "precio": "$242.949"
-  },
-  {
-    "codigo": "001050",
-    "nombre": "TEQUILA PATRON SILVER 700 - 750 ML",
-    "precio": "$199.409"
-  },
-  {
-    "codigo": "001055",
-    "nombre": "TEREA AMBER S50 PRI 20 SLI",
-    "precio": "$10.357"
-  },
-  {
-    "codigo": "001056",
-    "nombre": "TEREA BLUE MNT S50 PRI 20 SLI",
-    "precio": "$10.815"
-  },
-  {
-    "codigo": "001057",
-    "nombre": "TEREA BRONZE MNT S50 PRI 20 SLI",
-    "precio": "$10.817"
-  },
-  {
-    "codigo": "001058",
-    "nombre": "TEREA PURPLEWA MNT S50 PRI 20 SLI",
-    "precio": "$10.357"
-  },
-  {
-    "codigo": "001059",
-    "nombre": "TEREA TURQUOISE MNT S50 PRI 20 SLI",
-    "precio": "$10.817"
-  },
-  {
-    "codigo": "001090",
-    "nombre": "VASO ROJO MICHELADO",
-    "precio": "$342"
-  },
-  {
-    "codigo": "001103",
-    "nombre": "VEEV NOW ULTRA BLUE RASPBERRY 1100 PUFF",
-    "precio": "$30.086"
-  },
-  {
-    "codigo": "001104",
-    "nombre": "VEEV NOW ULTRA MANGO 1100 PUFF",
-    "precio": "$30.086"
-  },
-  {
-    "codigo": "001105",
-    "nombre": "VEEV NOW ULTRA MINT 1100 PUFF",
-    "precio": "$27.679"
-  },
-  {
-    "codigo": "001106",
-    "nombre": "VEEV NOW ULTRA SOUR APPLE 1100 PUFF",
-    "precio": "$27.679"
-  },
-  {
-    "codigo": "001107",
-    "nombre": "VEEV NOW ULTRA STRAWBERRY 1100 PUFF",
-    "precio": "$30.086"
-  },
-  {
-    "codigo": "001108",
-    "nombre": "VEEV NOW ULTRA WATERMELON 1100 PUFF",
-    "precio": "$30.086"
-  },
-  {
-    "codigo": "001214",
-    "nombre": "VINO LAMBRUSCO DELL EMILIA ROSO 750 ML",
-    "precio": "$25.630"
-  },
-  {
-    "codigo": "001217",
-    "nombre": "VINO LAMBRUSCO REMIGIO ROSATO 750 ML",
-    "precio": "$23.088"
-  },
-  {
-    "codigo": "001308",
-    "nombre": "VODKA ABSOLUT ORIGINAL 700 ML",
-    "precio": "$75.263"
-  },
-  {
-    "codigo": "001319",
-    "nombre": "VODKA GREY GOOSE 700ML",
-    "precio": "$177.260"
-  },
-  {
-    "codigo": "001359",
-    "nombre": "WAKA SMART 8K - BLUEBERRY SPLASH 5%",
-    "precio": "$67.830"
-  },
-  {
-    "codigo": "001361",
-    "nombre": "WAKA SMART 8K - STRAWBERRY BURST 5%",
-    "precio": "$67.830"
-  },
-  {
-    "codigo": "001362",
-    "nombre": "WAKA SMART 8K - WATERMELON CHILL 5%",
-    "precio": "$67.830"
-  },
-  {
-    "codigo": "001363",
-    "nombre": "WAKA SMASH 6K - MANGO MELON ALOE 3%",
-    "precio": "$48.017"
-  },
-  {
-    "codigo": "001364",
-    "nombre": "WAKA SMASH 6K - STRAWBERRY GRAPE 3%",
-    "precio": "$48.017"
-  },
-  {
-    "codigo": "001365",
-    "nombre": "WAKA SMASH 6K - WATERMELON CHILL 3%",
-    "precio": "$48.017"
-  },
-  {
-    "codigo": "001367",
-    "nombre": "WAKA SOLO 2.0 - DARK CHERRY 5%",
-    "precio": "$31.416"
-  },
-  {
-    "codigo": "001374",
-    "nombre": "WAKA-SMASH 6K - BLUEBERRY SPLASH 3%",
-    "precio": "$48.017"
-  },
-  {
-    "codigo": "001380",
-    "nombre": "WHISKY BLACK & WHITE 700 ML",
-    "precio": "$48.736"
-  },
-  {
-    "codigo": "001384",
-    "nombre": "WHISKY BUCHANANS DELUXE 12 AÑOS 1000 ML",
-    "precio": "$196.099"
-  },
-  {
-    "codigo": "001385",
-    "nombre": "WHISKY BUCHANANS DELUXE 12 AÑOS 375 ML",
-    "precio": "$89.598"
-  },
-  {
-    "codigo": "001386",
-    "nombre": "WHISKY BUCHANANS DELUXE 12 AÑOS 750 ML",
-    "precio": "$147.022"
-  },
-  {
-    "codigo": "001387",
-    "nombre": "WHISKY BUCHANANS MALTS EDITION 750 ML",
-    "precio": "$245.891"
-  },
-  {
-    "codigo": "001389",
-    "nombre": "WHISKY BUCHANANS MASTER 750 ML",
-    "precio": "$176.656"
-  },
-  {
-    "codigo": "001397",
-    "nombre": "WHISKY CHIVAS REGAL 12 AÑOS 700 ML",
-    "precio": "$123.636"
-  },
-  {
-    "codigo": "001400",
-    "nombre": "WHISKY CHIVAS REGAL 18 AÑOS BOT. 700 ML",
-    "precio": "$331.103"
-  },
-  {
-    "codigo": "001403",
-    "nombre": "WHISKY CHIVAS REGAL EXTRA 700 ML",
-    "precio": "$139.363"
-  },
-  {
-    "codigo": "001410",
-    "nombre": "WHISKY GLENFIDDICH 12 AÑOS 750 ML",
-    "precio": "$175.961"
-  },
-  {
-    "codigo": "001411",
-    "nombre": "WHISKY GLENFIDDICH 15 AÑOS 750 ML",
-    "precio": "$264.775"
-  },
-  {
-    "codigo": "001414",
-    "nombre": "WHISKY GLENLIVET 12 AÑOS 700 ML",
-    "precio": "$162.238"
-  },
-  {
-    "codigo": "001417",
-    "nombre": "WHISKY GLENLIVET FOUNDERS RESERVE 700ML",
-    "precio": "$143.567"
-  },
-  {
-    "codigo": "001425",
-    "nombre": "WHISKY GRANTS TRIPLE WOOD 700 ML",
-    "precio": "$52.013"
-  },
-  {
-    "codigo": "001429",
-    "nombre": "WHISKY JACK DANIELS APPLE 700 ML",
-    "precio": "$105.383"
-  },
-  {
-    "codigo": "001434",
-    "nombre": "WHISKY JACK DANIELS HONEY 700 ML",
-    "precio": "$107.233"
-  },
-  {
-    "codigo": "001435",
-    "nombre": "WHISKY JACK DANIELS HONEY 750 ML",
-    "precio": "$93.146"
-  },
-  {
-    "codigo": "001438",
-    "nombre": "WHISKY JACK DANIELS N.7 375 ML",
-    "precio": "$59.349"
-  },
-  {
-    "codigo": "001439",
-    "nombre": "WHISKY JACK DANIELS N.7 700 ML",
-    "precio": "$107.069"
-  },
-  {
-    "codigo": "001440",
-    "nombre": "WHISKY JACK DANIELS N.7 750 ML",
-    "precio": "$107.069"
-  },
-  {
-    "codigo": "001448",
-    "nombre": "WHISKY JOHNNIE WALKER 18 AÑOS 750 ML",
-    "precio": "$380.839"
-  },
-  {
-    "codigo": "001451",
-    "nombre": "WHISKY JOHNNIE WALKER BLACK LABEL 700 ML",
-    "precio": "$136.249"
-  },
-  {
-    "codigo": "001452",
-    "nombre": "WHISKY JOHNNIE WALKER BLUE LABEL 750 ML",
-    "precio": "$1.053.328"
-  },
-  {
-    "codigo": "001453",
-    "nombre": "WHISKY JW DOUBLE BLACK 700 ML",
-    "precio": "$168.659"
-  },
-  {
-    "codigo": "001455",
-    "nombre": "WHISKY JW GOLD LABEL RESERVE 700 ML",
-    "precio": "$217.702"
-  },
-  {
-    "codigo": "001457",
-    "nombre": "WHISKY JOHNNIE WALKER RED LABEL 200 ML",
-    "precio": "$20.581"
-  },
-  {
-    "codigo": "001465",
-    "nombre": "WHISKY MONKEY SHOULDER ORIGINAL 700 ML",
-    "precio": "$130.753"
-  },
-  {
-    "codigo": "001468",
-    "nombre": "WHISKY OLD PARR 12 AÑOS 1000 ML",
-    "precio": "$167.165"
-  },
-  {
-    "codigo": "001470",
-    "nombre": "WHISKY OLD PARR 12 AÑOS 500 ML",
-    "precio": "$96.932"
-  },
-  {
-    "codigo": "001471",
-    "nombre": "WHISKY OLD PARR 12 AÑOS 750 ML",
-    "precio": "$133.192"
-  },
-  {
-    "codigo": "001487",
-    "nombre": "WHISKY SOMETHING SPECIAL 350 ML",
-    "precio": "$38.951"
-  },
-  {
-    "codigo": "001488",
-    "nombre": "WHISKY SOMETHING SPECIAL 750 ML",
-    "precio": "$60.278"
-  },
-  {
-    "codigo": "001492",
-    "nombre": "WHISKY THE HIGHLAND SUPREME 750 ML",
-    "precio": "$60.234"
-  },
-  {
-    "codigo": "001501",
-    "nombre": "CIGARRILLO MARLBORO GOLD CAJ MET",
-    "precio": "$10.332"
-  },
-  {
-    "codigo": "001505",
-    "nombre": "CIGARRILLO STARLITE SILVER MEDIA",
-    "precio": "$3.652"
-  },
-  {
-    "codigo": "001506",
-    "nombre": "CIGARRILLO STARLITE SILVER CAJETILLA",
-    "precio": "$7.303"
-  },
-  {
-    "codigo": "001529",
-    "nombre": "JP CHENET DIVINE BRUT CHARDONAY 750 ML",
-    "precio": "$72.345"
-  },
-  {
-    "codigo": "001541",
-    "nombre": "VINO ESTORIL 750 ML",
-    "precio": "$19.735"
-  },
-  {
-    "codigo": "001542",
-    "nombre": "WHISKY SCOTTISH FOX 700 ML",
-    "precio": "$41.714"
-  },
-  {
-    "codigo": "001696",
-    "nombre": "ZYN BLACK CHERRY 3mg",
-    "precio": "$13.840"
-  },
-  {
-    "codigo": "001697",
-    "nombre": "ZYN BLACK CHERRY 6mg",
-    "precio": "$13.840"
-  },
-  {
-    "codigo": "001698",
-    "nombre": "ZYN CITRUS 3mg",
-    "precio": "$13.840"
-  },
-  {
-    "codigo": "001699",
-    "nombre": "ZYN CITRUS 6mg",
-    "precio": "$13.840"
-  },
-  {
-    "codigo": "001700",
-    "nombre": "ZYN COOL MINT 3mg",
-    "precio": "$13.840"
-  },
-  {
-    "codigo": "001701",
-    "nombre": "ZYN COOL MINT 6mg",
-    "precio": "$13.840"
-  },
-  {
-    "codigo": "001703",
-    "nombre": "ZYN SPEARMINT 3mg",
-    "precio": "$13.840"
-  },
-  {
-    "codigo": "001704",
-    "nombre": "ZYN SPEARMINT 6mg",
-    "precio": "$13.840"
-  },
-  {
-    "codigo": "001844",
-    "nombre": "TEREA PURPLE CAPSO MNT S50 PRI 20 SLI",
-    "precio": "$11.742"
-  },
-  {
-    "codigo": "0001877",
-    "nombre": "ITEM 102040",
-    "precio": "$1.440"
-  },
-  {
-    "codigo": "001953",
-    "nombre": "TEREA AMELIA CAPSO MNT S50 PRI 20 SLI",
-    "precio": "$11.742"
-  },
-  {
-    "codigo": "001954",
-    "nombre": "TEREA FRIZERA CAPSO MNT S50 PRI 20 SLI",
-    "precio": "$11.742"
-  },
-  {
-    "codigo": "002014",
-    "nombre": "VASO LOGO MICHELADO",
-    "precio": "$495"
+  }];
+
+  // FUNCIONES DEL GENERADOR DE ETIQUETAS
+  function generarEtiquetas() {
+    const contenedor = document.getElementById('contenedorEtiquetas');
+    const nom = document.getElementById('nombre').value;
+    const precio = document.getElementById('precio').value;
+    const cod = document.getElementById('codigo').value;
+    const cant = parseInt(document.getElementById('cantidad').value) || 1;
+    const ancho = document.getElementById('ancho').value;
+    const alto = document.getElementById('alto').value;
+    const tamNom = document.getElementById('tamanoProducto').value;
+    const tamPre = document.getElementById('tamanoPrecio').value;
+
+    for (let i = 0; i < cant; i++) {
+      const el = document.createElement('div');
+      el.className = 'etiqueta';
+      el.style.width = `${ancho}cm`;
+      el.style.height = `${alto}cm`;
+      el.innerHTML = `
+        <div class="barra-superior"></div>
+        <div class="codigo">${cod}</div>
+        <div class="producto" style="font-size: ${tamNom}px">${nom}</div>
+        <div class="precio" style="font-size: ${tamPre}px">${precio}</div>
+      `;
+      contenedor.appendChild(el);
+    }
   }
-    ];
 
-    const inputNombre = document.getElementById('nombre');
-    const lista = document.getElementById('listaProductos');
+  function borrarUltima() {
+    const contenedor = document.getElementById('contenedorEtiquetas');
+    if (contenedor.lastChild) contenedor.removeChild(contenedor.lastChild);
+  }
 
-    inputNombre.addEventListener('input', () => {
-        const val = inputNombre.value.toUpperCase();
-        lista.innerHTML = '';
-        if (!val) return;
+  function borrarTodo() {
+    document.getElementById('contenedorEtiquetas').innerHTML = '';
+  }
 
-        productos.filter(p => p.nombre.includes(val)).forEach(p => {
-            const div = document.createElement('div');
-            div.className = 'item-producto';
-            div.innerHTML = p.nombre;
-            div.onclick = () => {
-                inputNombre.value = p.nombre;
-                document.getElementById('precio').value = p.precio;
-                document.getElementById('codigo').value = p.codigo;
-                lista.innerHTML = '';
-            };
-            lista.appendChild(div);
-        });
+  function abrirHablador() {
+    document.querySelector('.app').style.display = 'none';
+    document.querySelector('.navegacion-hablador').style.display = 'none';
+    document.getElementById('moduloHablador').style.display = 'block';
+  }
+
+  function cerrarHablador() {
+    document.getElementById('moduloHablador').style.display = 'none';
+    document.querySelector('.app').style.display = 'block';
+    document.querySelector('.navegacion-hablador').style.display = 'flex';
+  }
+
+  // ==========================================
+  // ARREGLO DE HABLADORES EN COLA PARA IMPRESIÓN
+  // ==========================================
+  let listaHabladores = [];
+
+  function agregarHabladorALaLista() {
+    const hojaOriginal = document.getElementById('habHoja');
+    const nombre = document.querySelectorAll('#habHoja .hablador-nombre .texto')[0].textContent || 'Sin Descripción';
+    const codigo = document.querySelectorAll('#habHoja .hablador-codigo .texto')[0].textContent || '';
+    const cantidad = parseInt(document.getElementById('habCantidad').value) || 1;
+
+    for (let i = 0; i < cantidad; i++) {
+      const copiaHoja = hojaOriginal.cloneNode(true);
+      copiaHoja.classList.remove('hab-hoja-principal');
+      copiaHoja.classList.add('hab-hoja-guardada');
+      copiaHoja.removeAttribute('id');
+      
+      listaHabladores.push({
+        id: Date.now() + Math.random(),
+        nombre: nombre,
+        codigo: codigo,
+        elementoDOM: copiaHoja
+      });
+    }
+
+    renderizarListaHabladores();
+    limpiarHablador();
+  }
+
+  function renderizarListaHabladores() {
+    const contenedorLista = document.getElementById('habListaItems');
+    const contador = document.getElementById('habContadorLista');
+    contenedorLista.innerHTML = '';
+    contador.textContent = listaHabladores.length;
+
+    listaHabladores.forEach((item, index) => {
+      const div = document.createElement('div');
+      div.className = 'hablador-item-lista';
+      div.innerHTML = `
+        <span>${index + 1}. ${item.nombre}</span>
+        <button type="button" class="hablador-item-btn-eliminar" onclick="eliminarHabladorDeLista(${index})">✕</button>
+      `;
+      contenedorLista.appendChild(div);
+    });
+  }
+
+  function eliminarHabladorDeLista(index) {
+    listaHabladores.splice(index, 1);
+    renderizarListaHabladores();
+  }
+
+  function imprimirTodosLosHabladores() {
+    const zona = document.getElementById('habZonaContenedor');
+    const hojaPrincipal = document.getElementById('habHoja');
+
+    // Si no hay habladores en la lista, agregamos el hablador actual para imprimirlo
+    if (listaHabladores.length === 0) {
+      agregarHabladorALaLista();
+    }
+
+    // Ocultamos la hoja principal de edición para la impresión
+    hojaPrincipal.style.display = 'none';
+
+    // Insertamos todas las hojas guardadas en el contenedor visual
+    listaHabladores.forEach(item => {
+      zona.appendChild(item.elementoDOM);
     });
 
-    // Función que ACUMULA etiquetas sin borrar las anteriores
-    function generarEtiquetas() {
-        const contenedor = document.getElementById("contenedorEtiquetas");
-        const nombre = document.getElementById("nombre").value || "PRODUCTO";
-        const precio = document.getElementById("precio").value || "$0";
-        const codigo = document.getElementById("codigo").value || "000";
-        const cant = parseInt(document.getElementById("cantidad").value);
-        const w = document.getElementById("ancho").value;
-        const h = document.getElementById("alto").value;
-        const tProd = document.getElementById("tamanoProducto").value;
-        const tPrec = document.getElementById("tamanoPrecio").value;
-
-        for(let i=0; i<cant; i++) {
-            contenedor.innerHTML += `
-                <div class="etiqueta" style="width:${w}cm; height:${h}cm; margin: 5px;">
-                    <div class="barra-superior"></div>
-                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTWEOpuUVI7MdP6F4bFWIGUq_VxAyKJXjrtPA&s" class="logo">
-                    <div class="codigo">COD: ${codigo}</div>
-                    <div class="producto" style="font-size:${tProd}px;">${nombre}</div>
-                    <div class="precio" style="font-size:${tPrec}px;">${precio}</div>
-                </div>`;
-        }
-    }
-
-    // Borra solo la ÚLTIMA etiqueta generada
-    function borrarUltima() {
-        const contenedor = document.getElementById("contenedorEtiquetas");
-        if (contenedor.lastElementChild) {
-            contenedor.removeChild(contenedor.lastElementChild);
-        }
-    }
-
-    // Borra TODO el pliego
-    function borrarTodo() {
-        if(confirm("¿Seguro que quieres eliminar todas las etiquetas del pliego?")) {
-            document.getElementById("contenedorEtiquetas").innerHTML = "";
-        }
-    }
-
-
-/* ============================================================
-   HABLADOR - módulo independiente
-   ============================================================ */
-const habladorEstado = {
-    seleccionado: 'nombre',
-    negrita: {nombre:true, cantidad:true, codigo:true},
-    arrastrando: false,
-    offsetX: 0,
-    offsetY: 0
-};
-
-function habEl(tipo){
-    return document.getElementById(
-        tipo === 'nombre' ? 'habElNombre' :
-        tipo === 'cantidad' ? 'habElCantidad' : 'habElCodigo'
-    );
-}
-function habMmPx(mm){ return mm * 96 / 25.4; }
-function habPxMm(px){ return px * 25.4 / 96; }
-
-function abrirHablador(){
-    document.querySelector('.app').style.display='none';
-    document.querySelector('.navegacion-hablador').style.display='none';
-    document.getElementById('moduloHablador').style.display='block';
-    window.scrollTo(0,0);
-    actualizarHablador();
-}
-function cerrarHablador(){
-    document.getElementById('moduloHablador').style.display='none';
-    document.querySelector('.navegacion-hablador').style.display='flex';
-    document.querySelector('.app').style.display='block';
-    document.body.classList.remove('hablador-imprimir');
-}
-
-function seleccionarHab(tipo){
-    habladorEstado.seleccionado=tipo;
-    ['nombre','cantidad','codigo'].forEach(t=>habEl(t).classList.toggle('seleccionado',t===tipo));
-    document.getElementById('habElemento').value=tipo;
-    cargarControlesHab();
-}
-
-function cargarControlesHab(){
-    const el=habEl(habladorEstado.seleccionado);
-    const cs=getComputedStyle(el);
-    document.getElementById('habTamano').value=Math.round(parseFloat(cs.fontSize)*72/96);
-    document.getElementById('habFuente').value=cs.fontFamily.replace(/["']/g,'').split(',')[0];
-    document.getElementById('habX').value=Math.round(habPxMm(el.offsetLeft));
-    document.getElementById('habY').value=Math.round(habPxMm(el.offsetTop));
-    document.getElementById('habAncho').value=Math.round(habPxMm(el.offsetWidth));
-    document.getElementById('habAlto').value=Math.round(habPxMm(parseFloat(cs.minHeight)||el.offsetHeight));
-    document.getElementById('habNegrita').textContent=
-        'B Negrilla: '+(habladorEstado.negrita[habladorEstado.seleccionado]?'SÍ':'NO');
-    document.getElementById('habEstado').textContent=
-        'Editando: '+(habladorEstado.seleccionado==='nombre'?'DESCRIPCIÓN':
-        habladorEstado.seleccionado==='cantidad'?'CANTIDAD':'CÓDIGO');
-}
-
-function aplicarControlesHab(){
-    const el=habEl(habladorEstado.seleccionado);
-    el.style.left=document.getElementById('habX').value+'mm';
-    el.style.top=document.getElementById('habY').value+'mm';
-    el.style.width=document.getElementById('habAncho').value+'mm';
-    el.style.minHeight=document.getElementById('habAlto').value+'mm';
-    el.style.fontSize=document.getElementById('habTamano').value+'pt';
-    el.style.fontFamily=document.getElementById('habFuente').value;
-    el.style.fontWeight=habladorEstado.negrita[habladorEstado.seleccionado]?'700':'400';
-}
-
-function actualizarMargenHab(){
-    const m=document.getElementById('habMargenVisual');
-    m.style.top=document.getElementById('habMargenT').value+'mm';
-    m.style.bottom=document.getElementById('habMargenB').value+'mm';
-    m.style.left=document.getElementById('habMargenL').value+'mm';
-    m.style.right=document.getElementById('habMargenR').value+'mm';
-}
-
-function actualizarHablador(){
-    const codigo=document.getElementById('habCodigo').value||'000997';
-    const nombre=document.getElementById('habNombre').value||'TEQUILA 1800 SILVER 750 ML';
-    const cantidad=document.getElementById('habCantidad').value||'1';
-    habEl('codigo').querySelector('.texto').textContent='COD: '+codigo;
-    habEl('nombre').querySelector('.texto').textContent=nombre;
-    habEl('cantidad').querySelector('.texto').textContent='CANTIDAD: '+cantidad;
-    habEl('nombre').style.fontWeight=habladorEstado.negrita.nombre?'900':'400';
-    habEl('cantidad').style.fontWeight=habladorEstado.negrita.cantidad?'800':'400';
-    habEl('codigo').style.fontWeight=habladorEstado.negrita.codigo?'700':'400';
-    actualizarMargenHab();
-    cargarControlesHab();
-}
-
-function buscarHab(){
-    const q=document.getElementById('habBusqueda').value.trim().toUpperCase();
-    const box=document.getElementById('habResultados');
-    box.innerHTML='';
-    if(!q)return;
-    productos.filter(p=>p.codigo.toUpperCase().includes(q)||p.nombre.toUpperCase().includes(q))
-        .slice(0,30).forEach(p=>{
-            const d=document.createElement('div');
-            d.textContent=p.codigo+' — '+p.nombre;
-            d.onclick=()=>{
-                document.getElementById('habCodigo').value=p.codigo;
-                document.getElementById('habNombre').value=p.nombre;
-                document.getElementById('habBusqueda').value=p.codigo;
-                box.innerHTML='';
-                actualizarHablador();
-            };
-            box.appendChild(d);
-        });
-}
-
-function alternarNegritaHab(){
-    const t=habladorEstado.seleccionado;
-    habladorEstado.negrita[t]=!habladorEstado.negrita[t];
-    aplicarControlesHab();
-    cargarControlesHab();
-}
-
-function iniciarArrastreHab(e,tipo){
-    seleccionarHab(tipo);
-    const el=habEl(tipo);
-    const r=document.getElementById('habHoja').getBoundingClientRect();
-    habladorEstado.arrastrando=true;
-    habladorEstado.offsetX=e.clientX-r.left-el.offsetLeft;
-    habladorEstado.offsetY=e.clientY-r.top-el.offsetTop;
-    e.preventDefault();
-}
-function moverHab(e){
-    if(!habladorEstado.arrastrando)return;
-    const el=habEl(habladorEstado.seleccionado);
-    const r=document.getElementById('habHoja').getBoundingClientRect();
-    let x=habPxMm(e.clientX-r.left-habladorEstado.offsetX);
-    let y=habPxMm(e.clientY-r.top-habladorEstado.offsetY);
-    const maxX=215.9-habPxMm(el.offsetWidth);
-    const maxY=279.4-habPxMm(el.offsetHeight);
-    el.style.left=Math.max(0,Math.min(maxX,x))+'mm';
-    el.style.top=Math.max(0,Math.min(maxY,y))+'mm';
-    document.getElementById('habX').value=Math.round(Math.max(0,Math.min(maxX,x)));
-    document.getElementById('habY').value=Math.round(Math.max(0,Math.min(maxY,y)));
-}
-function terminarArrastreHab(){habladorEstado.arrastrando=false;}
-
-function centrarXHab(){
-    const el=habEl(habladorEstado.seleccionado);
-    const x=(215.9-habPxMm(el.offsetWidth))/2;
-    el.style.left=x+'mm';
-    document.getElementById('habX').value=Math.round(x);
-}
-
-function limpiarHablador(){
-    document.getElementById('habBusqueda').value='';
-    document.getElementById('habCodigo').value='';
-    document.getElementById('habNombre').value='';
-    document.getElementById('habCantidad').value=1;
-    document.getElementById('habResultados').innerHTML='';
-    actualizarHablador();
-}
-function imprimirHablador(){
     document.body.classList.add('hablador-imprimir');
     window.print();
-    setTimeout(()=>document.body.classList.remove('hablador-imprimir'),700);
-}
+    document.body.classList.remove('hablador-imprimir');
 
-document.addEventListener('DOMContentLoaded',()=>{
-    document.getElementById('habBusqueda').addEventListener('input',buscarHab);
-    ['habCodigo','habNombre','habCantidad'].forEach(id=>
-        document.getElementById(id).addEventListener('input',actualizarHablador));
-    document.getElementById('habElemento').addEventListener('change',e=>seleccionarHab(e.target.value));
-    ['habTamano','habFuente','habX','habY','habAncho','habAlto'].forEach(id=>
-        document.getElementById(id).addEventListener('input',aplicarControlesHab));
-    document.getElementById('habNegrita').addEventListener('click',alternarNegritaHab);
-    document.getElementById('habCentrar').addEventListener('click',centrarXHab);
-    ['habMargenT','habMargenB','habMargenL','habMargenR'].forEach(id=>
-        document.getElementById(id).addEventListener('input',actualizarMargenHab));
-
-    ['nombre','cantidad','codigo'].forEach(tipo=>{
-        habEl(tipo).addEventListener('mousedown',e=>iniciarArrastreHab(e,tipo));
-    });
-    document.addEventListener('mousemove',moverHab);
-    document.addEventListener('mouseup',terminarArrastreHab);
-
-    actualizarHablador();
-});
-
-
-/* HABLADOR: movimiento + redimensionamiento con el mouse */
-(function(){
-  let interaccion = null;
-
-  function seleccionarVisual(el){
-    document.querySelectorAll('.hablador-elemento').forEach(x =>
-      x.classList.toggle('seleccionado', x === el)
-    );
+    // Restauramos el estado original después de imprimir
+    hojaPrincipal.style.display = 'block';
+    const hojasGuardadas = zona.querySelectorAll('.hab-hoja-guardada');
+    hojasGuardadas.forEach(h => h.remove());
   }
 
-  function comenzar(e, el){
-    if(e.button !== 0) return;
-    seleccionarVisual(el);
-
-    const esResize = e.target.classList.contains('hablador-resize');
-    const r = el.getBoundingClientRect();
-
-    interaccion = {
-      tipo: esResize ? 'resize' : 'move',
-      el: el,
-      sx: e.clientX,
-      sy: e.clientY,
-      left: r.left,
-      top: r.top,
-      width: r.width,
-      height: r.height
-    };
-
-    e.preventDefault();
-    e.stopPropagation();
-    document.addEventListener('mousemove', mover);
-    document.addEventListener('mouseup', terminar);
+  function limpiarHablador() {
+    document.getElementById('habCodigo').value = '';
+    document.getElementById('habNombre').value = '';
+    document.getElementById('habBusqueda').value = '';
+    document.getElementById('habCantidad').value = '1';
+    document.querySelectorAll('#habHoja .hablador-nombre .texto')[0].textContent = 'DESCRIPCIÓN DEL PRODUCTO';
+    document.querySelectorAll('#habHoja .hablador-codigo .texto')[0].textContent = 'COD: 000000';
+    document.querySelectorAll('#habHoja .hablador-cantidad .texto')[0].textContent = 'CANTIDAD: 1';
   }
 
-  function mover(e){
-    if(!interaccion) return;
+  // AUTOCOMPLETADOS Y BUSCADORES
+  document.getElementById('habBusqueda').addEventListener('input', function() {
+    const query = this.value.toLowerCase();
+    const resultadosDiv = document.getElementById('habResultados');
+    resultadosDiv.innerHTML = '';
+    if (!query) return;
 
-    const d = interaccion;
-    const hoja = document.getElementById('habHoja');
-    if(!hoja) return;
-    const hr = hoja.getBoundingClientRect();
-
-    if(d.tipo === 'move'){
-      let left = d.left + e.clientX - d.sx;
-      let top = d.top + e.clientY - d.sy;
-      left = Math.max(hr.left, Math.min(left, hr.right - d.width));
-      top = Math.max(hr.top, Math.min(top, hr.bottom - d.height));
-      d.el.style.left = (left - hr.left) + 'px';
-      d.el.style.top = (top - hr.top) + 'px';
-    } else {
-      const minW = 10 * (hr.width / 215.9);
-      const minH = 5 * (hr.height / 279.4);
-      let width = Math.max(minW, d.width + e.clientX - d.sx);
-      let height = Math.max(minH, d.height + e.clientY - d.sy);
-      width = Math.min(width, hr.right - d.el.getBoundingClientRect().left);
-      height = Math.min(height, hr.bottom - d.el.getBoundingClientRect().top);
-      d.el.style.width = width + 'px';
-      d.el.style.height = height + 'px';
-    }
-
-    if(typeof cargarControlesHab === 'function') cargarControlesHab();
-    if(typeof actualizarHablador === 'function') actualizarHablador();
-  }
-
-  function terminar(){
-    document.removeEventListener('mousemove', mover);
-    document.removeEventListener('mouseup', terminar);
-    interaccion = null;
-  }
-
-  window.iniciarArrastreHab = comenzar;
-
-  document.addEventListener('DOMContentLoaded', function(){
-    document.querySelectorAll('.hablador-elemento').forEach(el => {
-      el.addEventListener('mousedown', function(e){ comenzar(e, el); });
+    const filtrados = productos.filter(p => p.nombre.toLowerCase().includes(query) || p.codigo.includes(query));
+    filtrados.forEach(p => {
+      const div = document.createElement('div');
+      div.textContent = `${p.codigo} - ${p.nombre}`;
+      div.onclick = function() {
+        document.getElementById('habCodigo').value = `COD: ${p.codigo}`;
+        document.getElementById('habNombre').value = p.nombre;
+        document.querySelectorAll('#habHoja .hablador-nombre .texto')[0].textContent = p.nombre;
+        document.querySelectorAll('#habHoja .hablador-codigo .texto')[0].textContent = `COD: ${p.codigo}`;
+        resultadosDiv.innerHTML = '';
+      };
+      resultadosDiv.appendChild(div);
     });
   });
-})();
-</script>
 
+  document.getElementById('nombre').addEventListener('input', function() {
+    const query = this.value.toLowerCase();
+    const lista = document.getElementById('listaProductos');
+    lista.innerHTML = '';
+    if (!query) return;
+
+    const filtrados = productos.filter(p => p.nombre.toLowerCase().includes(query) || p.codigo.includes(query));
+    filtrados.forEach(p => {
+      const div = document.createElement('div');
+      div.className = 'item-producto';
+      div.textContent = `${p.codigo} - ${p.nombre}`;
+      div.onclick = function() {
+        document.getElementById('nombre').value = p.nombre;
+        document.getElementById('codigo').value = p.codigo;
+        document.getElementById('precio').value = p.precio;
+        lista.innerHTML = '';
+      };
+      lista.appendChild(div);
+    });
+  });
+
+  document.getElementById('habNombre').addEventListener('input', function() {
+    const val = this.value;
+    document.querySelectorAll('#habHoja .hablador-nombre .texto').forEach(el => el.textContent = val);
+  });
+
+  document.getElementById('habCodigo').addEventListener('input', function() {
+    const val = this.value;
+    document.querySelectorAll('#habHoja .hablador-codigo .texto').forEach(el => el.textContent = val);
+  });
+
+  document.getElementById('habCantidad').addEventListener('input', function() {
+    const val = this.value;
+    document.querySelectorAll('#habHoja .hablador-cantidad .texto').forEach(el => el.textContent = `CANTIDAD: ${val}`);
+  });
+
+  // SISTEMA DRAG AND DROP (ARRASTRAR ELEMENTOS)
+  let elementoSeleccionado = null;
+  let offsetX = 0, offsetY = 0;
+
+  document.querySelectorAll('.hablador-elemento').forEach(el => {
+    el.addEventListener('mousedown', function(e) {
+      if (e.target.classList.contains('hablador-resize')) return;
+      elementoSeleccionado = this;
+      document.querySelectorAll('.hablador-elemento').forEach(elem => elem.classList.remove('seleccionado'));
+      this.classList.add('seleccionado');
+      
+      const rect = this.getBoundingClientRect();
+      offsetX = e.clientX - rect.left;
+      offsetY = e.clientY - rect.top;
+
+      const tipo = this.getAttribute('data-elemento');
+      document.getElementById('habElemento').value = tipo;
+      document.getElementById('habTamano').value = parseInt(window.getComputedStyle(this).fontSize) || 42;
+      document.getElementById('habX').value = Math.round(this.offsetLeft / 3.7795);
+      document.getElementById('habY').value = Math.round(this.offsetTop / 3.7795);
+      document.getElementById('habAncho').value = Math.round(this.offsetWidth / 3.7795);
+      document.getElementById('habAlto').value = Math.round(this.offsetHeight / 3.7795);
+      
+      e.stopPropagation();
+    });
+  });
+
+  document.addEventListener('mousemove', function(e) {
+    if (!elementoSeleccionado) return;
+    const hoja = document.getElementById('habHoja');
+    const hojaRect = hoja.getBoundingClientRect();
+
+    let x = e.clientX - hojaRect.left - offsetX;
+    let y = e.clientY - hojaRect.top - offsetY;
+
+    elementoSeleccionado.style.left = `${x}px`;
+    elementoSeleccionado.style.top = `${y}px`;
+
+    document.getElementById('habX').value = Math.round(x / 3.7795);
+    document.getElementById('habY').value = Math.round(y / 3.7795);
+  });
+
+  document.addEventListener('mouseup', function() {
+    elementoSeleccionado = null;
+  });
+</script>
 </body>
 </html>
