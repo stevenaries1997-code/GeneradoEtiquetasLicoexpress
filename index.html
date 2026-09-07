@@ -79,7 +79,6 @@
             page-break-inside: avoid;
         }
         .barra-superior { width: 100%; height: 12px; background: black; position: absolute; top: 0; left: 0; }
-        .logo { width: 45px; position: absolute; top: 18px; right: 18px; }
         .codigo { font-size: 14px; font-weight: bold; color: #444; }
         .producto { font-weight: 900; width: 80%; margin-top: 15px; line-height: 1.1; text-transform: uppercase; word-wrap: break-word; }
         .precio { font-weight: 900; position: absolute; left: 18px; bottom: 18px; line-height: 1; }
@@ -202,8 +201,8 @@
             </div>
 
             <div class="hablador-field">
-                <label>Cantidad</label>
-                <input id="habCantidad" type="number" min="1" value="1">
+                <label>Cantidad en inventario</label>
+                <input id="habCantidad" type="number" min="0" value="1">
             </div>
 
             <button type="button" class="hablador-btn-agregar" onclick="agregarHabladorALaLista()">➕ AGREGAR HABLADOR A LA LISTA</button>
@@ -284,7 +283,7 @@
                     <span class="texto">COD: 000997</span>
                 </div>
 
-                <!-- 3. CANTIDAD -->
+                <!-- 3. CANTIDAD EN INVENTARIO -->
                 <div class="hablador-elemento hablador-cantidad" id="habElCantidad" data-elemento="cantidad">
                     <span class="hablador-resize" aria-hidden="true"></span>
                     <span class="texto">CANTIDAD: 1</span>
@@ -325,7 +324,7 @@
                 <input type="text" id="codigo" placeholder="000">
             </div>
             <div class="input-group">
-                <label>Cantidad</label>
+                <label>Cantidad de Etiquetas</label>
                 <input type="number" id="cantidad" value="1" min="1">
             </div>
             <div class="botones">
@@ -569,21 +568,23 @@
       const hojaOriginal = document.getElementById('habHoja');
       const nombre = document.querySelectorAll('#habHoja .hablador-nombre .texto')[0].textContent || 'Sin Descripción';
       const codigo = document.querySelectorAll('#habHoja .hablador-codigo .texto')[0].textContent || '';
-      const cantidad = parseInt(document.getElementById('habCantidad').value) || 1;
+      const cantidadInventario = document.getElementById('habCantidad').value || '0';
 
-      for (let i = 0; i < cantidad; i++) {
-        const copiaHoja = hojaOriginal.cloneNode(true);
-        copiaHoja.classList.remove('hab-hoja-principal');
-        copiaHoja.classList.add('hab-hoja-guardada');
-        copiaHoja.removeAttribute('id');
-        
-        listaHabladores.push({
-          id: Date.now() + Math.random(),
-          nombre: nombre,
-          codigo: codigo,
-          elementoDOM: copiaHoja
-        });
-      }
+      // Asegurar que la cantidad en el elemento impreso refleje el inventario actual
+      document.querySelectorAll('#habHoja .hablador-cantidad .texto')[0].textContent = `CANTIDAD: ${cantidadInventario}`;
+
+      const copiaHoja = hojaOriginal.cloneNode(true);
+      copiaHoja.classList.remove('hab-hoja-principal');
+      copiaHoja.classList.add('hab-hoja-guardada');
+      copiaHoja.removeAttribute('id');
+      
+      listaHabladores.push({
+        id: Date.now() + Math.random(),
+        nombre: nombre,
+        codigo: codigo,
+        cantidadInventario: cantidadInventario,
+        elementoDOM: copiaHoja
+      });
 
       renderizarListaHabladores();
       limpiarHablador();
@@ -599,7 +600,7 @@
         const div = document.createElement('div');
         div.className = 'hablador-item-lista';
         div.innerHTML = `
-          <span>${index + 1}. ${item.nombre}</span>
+          <span>${index + 1}. ${item.nombre} (Cant: ${item.cantidadInventario})</span>
           <button type="button" class="hablador-item-btn-eliminar" onclick="eliminarHabladorDeLista(${index})">✕</button>
         `;
         contenedorLista.appendChild(div);
