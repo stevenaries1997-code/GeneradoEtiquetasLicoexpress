@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Generador de Etiquetas - LICOEXPRESS</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&display=swap" rel="stylesheet">
     <style>
         html { zoom: 0.90; }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, Helvetica, sans-serif; }
@@ -88,9 +89,459 @@
             body { background: white; padding: 0; }
             .preview-area { border: none; padding: 0; }
         }
-    </style>
+
+
+/* ============================================================
+   HABLADOR - MÓDULO INDEPENDIENTE CON ESTILO EXACTO SOLICITADO
+   No altera los estilos del generador original.
+   ============================================================ */
+.navegacion-hablador{
+    max-width:1400px;
+    margin:0 auto 15px;
+    display:flex;
+    justify-content:flex-end;
+}
+.btn-hablador{
+    flex:0 0 auto;
+    min-width:240px;
+    padding:13px 20px;
+    border:0;
+    border-radius:12px;
+    background:#111;
+    color:#fff;
+    font-weight:800;
+    cursor:pointer;
+}
+#moduloHablador{
+    display:none;
+    max-width:1400px;
+    margin:0 auto;
+}
+.hablador-cabecera{
+    background:#fff;
+    border:1px solid #e2e2e2;
+    border-radius:18px;
+    padding:18px 20px;
+    margin-bottom:15px;
+    box-shadow:0 4px 10px rgba(0,0,0,.04);
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:15px;
+}
+.hablador-cabecera h1{font-size:25px;margin-bottom:4px}
+.hablador-cabecera p{font-size:12px;color:#666}
+.hablador-btn-volver{background:#555;color:#fff;flex:0 0 auto}
+.hablador-editor-layout{
+    display:grid;
+    grid-template-columns:340px minmax(600px,1fr);
+    gap:18px;
+    align-items:start;
+}
+.hablador-panel{
+    background:#fff;
+    border:1px solid #e2e2e2;
+    border-radius:18px;
+    padding:18px;
+    box-shadow:0 4px 10px rgba(0,0,0,.04);
+}
+.hablador-panel h2{font-size:15px;margin:0 0 12px}
+.hablador-field{position:relative;margin-bottom:12px}
+.hablador-field label{
+    display:block;font-size:10px;font-weight:800;
+    color:#555;text-transform:uppercase;margin-bottom:5px
+}
+.hablador-field input,.hablador-field select{
+    width:100%;padding:10px;border:2px solid #eee;border-radius:10px;
+    font-size:13px;outline:none
+}
+.hablador-field input:focus,.hablador-field select:focus{border-color:#111}
+.hablador-resultados{
+    position:absolute;z-index:20;top:100%;left:0;right:0;
+    background:#fff;border:1px solid #ddd;border-radius:10px;
+    max-height:200px;overflow:auto;box-shadow:0 6px 15px rgba(0,0,0,.12)
+}
+.hablador-resultados div{padding:9px;font-size:11px;border-bottom:1px solid #eee;cursor:pointer}
+.hablador-resultados div:hover{background:#f3f3f3}
+.hablador-seccion{
+    border-top:1px solid #eee;padding-top:14px;margin-top:14px
+}
+.hablador-seccion h3{
+    font-size:11px;text-transform:uppercase;margin-bottom:9px
+}
+.hablador-grid-2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.hablador-grid-4{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.hablador-grid-2 label,.hablador-grid-4 label{
+    font-size:9px;font-weight:800;color:#666;display:block;margin-bottom:4px
+}
+.hablador-grid-2 input,.hablador-grid-2 select,.hablador-grid-4 input{
+    width:100%;padding:8px;border:1px solid #ddd;border-radius:8px
+}
+.hablador-botonera{display:flex;gap:8px;margin-top:15px}
+.hablador-botonera button{min-width:0}
+.hablador-btn-imprimir{background:#111;color:#fff}
+.hablador-btn-limpiar{background:#eee;color:#111}
+.hablador-zona{
+    background:#e9ecef;border-radius:18px;padding:20px;
+    overflow:auto;display:flex;justify-content:center
+}
+
+/* =========================================================
+   ESTILOS EXACTOS DEL DISEÑO DE HABLADOR ADJUNTADO
+   ========================================================= */
+.hablador-hoja {
+    width: 215.9mm;
+    height: 279.4mm;
+    min-width: 215.9mm;
+    min-height: 279.4mm;
+    background: #ffffff;
+    position: relative;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.4);
+    overflow: hidden;
+    box-sizing: border-box;
+    font-family: 'Montserrat', 'Arial', sans-serif;
+    color: #111;
+}
+
+/* Marco doble de alta gama */
+.hablador-marco-profesional {
+    position: absolute;
+    inset: 10mm;
+    border: 3px solid #111116;
+    border-radius: 8px;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.hablador-marco-interior {
+    position: absolute;
+    inset: 12mm;
+    border: 1px solid #111116;
+    border-radius: 6px;
+    pointer-events: none;
+    z-index: 1;
+}
+
+/* Encabezado elegante */
+.hablador-header-bar {
+    position: absolute;
+    top: 12mm;
+    left: 12mm;
+    right: 12mm;
+    height: 18mm;
+    background: #111116;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ffffff;
+    font-size: 16pt;
+    font-weight: 900;
+    letter-spacing: 5px;
+    text-transform: uppercase;
+    z-index: 2;
+}
+
+/* Pie de página elegante */
+.hablador-footer-bar {
+    position: absolute;
+    bottom: 12mm;
+    left: 12mm;
+    right: 12mm;
+    height: 10mm;
+    background: #f1f3f5;
+    border-top: 1px solid #e9ecef;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 15mm;
+    color: #6c757d;
+    font-size: 8pt;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    z-index: 2;
+}
+
+/* Elementos draggables en el hablador */
+.hablador-elemento {
+    position: absolute;
+    cursor: move;
+    user-select: none;
+    border: 1px dashed transparent;
+    transition: border-color 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    z-index: 10;
+    padding: 10px;
+}
+
+.hablador-elemento:hover, .hablador-elemento.seleccionado {
+    border-color: #007bff;
+}
+
+.hablador-elemento .texto {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    word-break: break-word;
+}
+
+.hablador-resize {
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    right: -7px;
+    bottom: -7px;
+    background: #2563eb;
+    border: 2px solid #fff;
+    border-radius: 50%;
+    cursor: nwse-resize;
+    touch-action: none;
+    display: none;
+    z-index: 20;
+    box-sizing: border-box;
+}
+
+.hablador-elemento.seleccionado .hablador-resize {
+    display: block;
+}
+
+/* Disposición por defecto exacta según la imagen */
+#habElNombre {
+    left: 20mm;
+    top: 45mm;
+    width: 175mm;
+    min-height: 90mm;
+    font-size: 42pt;
+    font-weight: 900;
+    text-transform: uppercase;
+    color: #111116;
+    line-height: 1.15;
+    letter-spacing: -0.5px;
+}
+
+#habElCodigo {
+    left: 58mm;
+    top: 155mm;
+    width: 100mm;
+    min-height: 22mm;
+    font-size: 18pt;
+    font-weight: 700;
+    color: #212529;
+    background: #f8f9fa;
+    border: 2px solid #111116;
+    border-radius: 8px;
+    letter-spacing: 2px;
+}
+
+#habElCantidad {
+    left: 48mm;
+    top: 195mm;
+    width: 120mm;
+    min-height: 25mm;
+    font-size: 28pt;
+    font-weight: 800;
+    color: #111116;
+    border-bottom: 3px solid #111116;
+    letter-spacing: 1px;
+}
+
+.hablador-area-segura {
+    position: absolute;
+    inset: 15mm;
+    border: 1px dashed #aab0b8;
+    pointer-events: none;
+    z-index: 2;
+}
+
+@media(max-width:900px){
+    .hablador-editor-layout{grid-template-columns:1fr}
+    .hablador-zona{justify-content:flex-start}
+}
+
+@media print{
+    body.hablador-imprimir{padding:0!important;background:#fff!important}
+    body.hablador-imprimir>*{display:none!important}
+    body.hablador-imprimir #moduloHablador{display:block!important;margin:0!important;max-width:none!important}
+    body.hablador-imprimir #moduloHablador .hablador-cabecera,
+    body.hablador-imprimir #moduloHablador .hablador-panel{display:none!important}
+    body.hablador-imprimir #moduloHablador .hablador-zona{
+        display:block!important;padding:0!important;background:#fff!important
+    }
+    body.hablador-imprimir .hablador-hoja{
+        box-shadow:none!important;
+        margin:0!important;
+        page-break-after: always;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+    body.hablador-imprimir .hablador-area-segura{display:none!important}
+    body.hablador-imprimir .hablador-elemento{
+        border:none!important;
+    }
+    body.hablador-imprimir .hablador-header-bar{
+        background: #111116 !important;
+        color: #ffffff !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+    body.hablador-imprimir #habElCodigo{
+        background: #f8f9fa !important;
+        border: 2px solid #111116 !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+    body.hablador-imprimir #habElCantidad{
+        border-bottom: 3px solid #111116 !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+    body.hablador-imprimir .hablador-footer-bar{
+        background: #f1f3f5 !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+}
+
+</style>
 </head>
 <body>
+
+<div class="navegacion-hablador">
+<button type="button" class="btn-hablador" onclick="abrirHablador()">🏷️ DISEÑAR UN HABLADOR</button>
+</div>
+
+
+<div id="moduloHablador">
+    <div class="hablador-cabecera">
+        <div>
+            <h1>Diseñador de HABLADOR</h1>
+            <p>Hoja carta · mueve cada elemento libremente · configura márgenes y posición.</p>
+        </div>
+        <button type="button" class="hablador-btn-volver" onclick="cerrarHablador()">← Volver al generador</button>
+    </div>
+
+    <div class="hablador-editor-layout">
+        <aside class="hablador-panel">
+            <h2>Datos del hablador</h2>
+
+            <div class="hablador-field">
+                <label>Buscar producto por nombre o código</label>
+                <input id="habBusqueda" type="text" placeholder="Escribe para buscar..." autocomplete="off">
+                <div id="habResultados" class="hablador-resultados"></div>
+            </div>
+
+            <div class="hablador-field">
+                <label>Código</label>
+                <input id="habCodigo" type="text" placeholder="Código">
+            </div>
+
+            <div class="hablador-field">
+                <label>Descripción del producto</label>
+                <input id="habNombre" type="text" placeholder="Nombre del producto">
+            </div>
+
+            <div class="hablador-field">
+                <label>Cantidad</label>
+                <input id="habCantidad" type="number" min="1" value="1">
+            </div>
+
+            <div class="hablador-seccion">
+                <h3>Elemento seleccionado</h3>
+                <div class="hablador-field">
+                    <label>Seleccionar</label>
+                    <select id="habElemento">
+                        <option value="nombre">Descripción</option>
+                        <option value="cantidad">Cantidad</option>
+                        <option value="codigo">Código</option>
+                    </select>
+                </div>
+
+                <div class="hablador-grid-2">
+                    <div><label>Tamaño (pt)</label><input id="habTamano" type="number" min="6" max="150" value="42"></div>
+                    <div><label>Fuente</label>
+                        <select id="habFuente">
+                            <option>Montserrat</option><option>Arial</option><option>Verdana</option>
+                            <option>Tahoma</option><option>Georgia</option><option>Times New Roman</option>
+                            <option>Courier New</option><option>Trebuchet MS</option>
+                        </select>
+                    </div>
+                    <div><label>Posición X (mm)</label><input id="habX" type="number" step="1" value="20"></div>
+                    <div><label>Posición Y (mm)</label><input id="habY" type="number" step="1" value="45"></div>
+                    <div><label>Ancho (mm)</label><input id="habAncho" type="number" min="10" max="210" value="175"></div>
+                    <div><label>Alto (mm)</label><input id="habAlto" type="number" min="5" max="150" value="90"></div>
+                </div>
+
+                <div class="hablador-botonera">
+                    <button type="button" id="habNegrita">B Negrilla: SÍ</button>
+                    <button type="button" id="habCentrar">↔ Centrar X</button>
+                </div>
+            </div>
+
+            <div class="hablador-seccion">
+                <h3>Márgenes de impresión</h3>
+                <div class="hablador-grid-4">
+                    <div><label>Superior (mm)</label><input id="habMargenT" type="number" min="0" max="100" value="15"></div>
+                    <div><label>Inferior (mm)</label><input id="habMargenB" type="number" min="0" max="100" value="15"></div>
+                    <div><label>Izquierdo (mm)</label><input id="habMargenL" type="number" min="0" max="100" value="15"></div>
+                    <div><label>Derecho (mm)</label><input id="habMargenR" type="number" min="0" max="100" value="15"></div>
+                </div>
+            </div>
+
+            <div class="hablador-estado" id="habEstado">Selecciona un elemento para editarlo.</div>
+            <div class="hablador-instruccion">
+                <b>Cómo usar:</b> haz clic en Descripción, Cantidad o Código y arrástralo directamente sobre la hoja.
+                La línea punteada representa los márgenes.
+            </div>
+
+            <div class="hablador-botonera">
+                <button type="button" class="hablador-btn-imprimir" onclick="imprimirHablador()">🖨️ Imprimir</button>
+                <button type="button" class="hablador-btn-limpiar" onclick="limpiarHablador()">Limpiar</button>
+            </div>
+        </aside>
+
+        <section class="hablador-zona">
+            <div class="hablador-hoja" id="habHoja">
+                <div class="hablador-header-bar">LICOEXPRESS</div>
+                <div class="hablador-marco-profesional"></div>
+                <div class="hablador-marco-interior"></div>
+
+                <div class="hablador-area-segura" id="habMargenVisual"></div>
+
+                <!-- 1. NOMBRE / DESCRIPCIÓN DEL PRODUCTO -->
+                <div class="hablador-elemento seleccionado" id="habElNombre"
+                     data-elemento="nombre">
+                    <span class="hablador-resize" aria-hidden="true"></span>
+                    <span class="texto">TEQUILA 1800 SILVER 750 ML</span>
+                </div>
+
+                <!-- 2. CÓDIGO -->
+                <div class="hablador-elemento" id="habElCodigo"
+                     data-elemento="codigo">
+                    <span class="hablador-resize" aria-hidden="true"></span>
+                    <span class="texto">COD: 000997</span>
+                </div>
+
+                <!-- 3. CANTIDAD -->
+                <div class="hablador-elemento" id="habElCantidad"
+                     data-elemento="cantidad">
+                    <span class="hablador-resize" aria-hidden="true"></span>
+                    <span class="texto">CANTIDAD: 1</span>
+                </div>
+
+                <div class="hablador-footer-bar">
+                    <span>EXCLUSIVO LICOEXPRESS</span>
+                    <span>CALIDAD GARANTIZADA</span>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
 
 <div class="app">
     <div class="header">
@@ -1239,6 +1690,270 @@
             document.getElementById("contenedorEtiquetas").innerHTML = "";
         }
     }
+
+
+/* ============================================================
+   HABLADOR - módulo independiente
+   ============================================================ */
+const habladorEstado = {
+    seleccionado: 'nombre',
+    negrita: {nombre:true, cantidad:true, codigo:true},
+    arrastrando: false,
+    offsetX: 0,
+    offsetY: 0
+};
+
+function habEl(tipo){
+    return document.getElementById(
+        tipo === 'nombre' ? 'habElNombre' :
+        tipo === 'cantidad' ? 'habElCantidad' : 'habElCodigo'
+    );
+}
+function habMmPx(mm){ return mm * 96 / 25.4; }
+function habPxMm(px){ return px * 25.4 / 96; }
+
+function abrirHablador(){
+    document.querySelector('.app').style.display='none';
+    document.querySelector('.navegacion-hablador').style.display='none';
+    document.getElementById('moduloHablador').style.display='block';
+    window.scrollTo(0,0);
+    actualizarHablador();
+}
+function cerrarHablador(){
+    document.getElementById('moduloHablador').style.display='none';
+    document.querySelector('.navegacion-hablador').style.display='flex';
+    document.querySelector('.app').style.display='block';
+    document.body.classList.remove('hablador-imprimir');
+}
+
+function seleccionarHab(tipo){
+    habladorEstado.seleccionado=tipo;
+    ['nombre','cantidad','codigo'].forEach(t=>habEl(t).classList.toggle('seleccionado',t===tipo));
+    document.getElementById('habElemento').value=tipo;
+    cargarControlesHab();
+}
+
+function cargarControlesHab(){
+    const el=habEl(habladorEstado.seleccionado);
+    const cs=getComputedStyle(el);
+    document.getElementById('habTamano').value=Math.round(parseFloat(cs.fontSize)*72/96);
+    document.getElementById('habFuente').value=cs.fontFamily.replace(/["']/g,'').split(',')[0];
+    document.getElementById('habX').value=Math.round(habPxMm(el.offsetLeft));
+    document.getElementById('habY').value=Math.round(habPxMm(el.offsetTop));
+    document.getElementById('habAncho').value=Math.round(habPxMm(el.offsetWidth));
+    document.getElementById('habAlto').value=Math.round(habPxMm(parseFloat(cs.minHeight)||el.offsetHeight));
+    document.getElementById('habNegrita').textContent=
+        'B Negrilla: '+(habladorEstado.negrita[habladorEstado.seleccionado]?'SÍ':'NO');
+    document.getElementById('habEstado').textContent=
+        'Editando: '+(habladorEstado.seleccionado==='nombre'?'DESCRIPCIÓN':
+        habladorEstado.seleccionado==='cantidad'?'CANTIDAD':'CÓDIGO');
+}
+
+function aplicarControlesHab(){
+    const el=habEl(habladorEstado.seleccionado);
+    el.style.left=document.getElementById('habX').value+'mm';
+    el.style.top=document.getElementById('habY').value+'mm';
+    el.style.width=document.getElementById('habAncho').value+'mm';
+    el.style.minHeight=document.getElementById('habAlto').value+'mm';
+    el.style.fontSize=document.getElementById('habTamano').value+'pt';
+    el.style.fontFamily=document.getElementById('habFuente').value;
+    el.style.fontWeight=habladorEstado.negrita[habladorEstado.seleccionado]?'700':'400';
+}
+
+function actualizarMargenHab(){
+    const m=document.getElementById('habMargenVisual');
+    m.style.top=document.getElementById('habMargenT').value+'mm';
+    m.style.bottom=document.getElementById('habMargenB').value+'mm';
+    m.style.left=document.getElementById('habMargenL').value+'mm';
+    m.style.right=document.getElementById('habMargenR').value+'mm';
+}
+
+function actualizarHablador(){
+    const codigo=document.getElementById('habCodigo').value||'000997';
+    const nombre=document.getElementById('habNombre').value||'TEQUILA 1800 SILVER 750 ML';
+    const cantidad=document.getElementById('habCantidad').value||'1';
+    habEl('codigo').querySelector('.texto').textContent='COD: '+codigo;
+    habEl('nombre').querySelector('.texto').textContent=nombre;
+    habEl('cantidad').querySelector('.texto').textContent='CANTIDAD: '+cantidad;
+    habEl('nombre').style.fontWeight=habladorEstado.negrita.nombre?'900':'400';
+    habEl('cantidad').style.fontWeight=habladorEstado.negrita.cantidad?'800':'400';
+    habEl('codigo').style.fontWeight=habladorEstado.negrita.codigo?'700':'400';
+    actualizarMargenHab();
+    cargarControlesHab();
+}
+
+function buscarHab(){
+    const q=document.getElementById('habBusqueda').value.trim().toUpperCase();
+    const box=document.getElementById('habResultados');
+    box.innerHTML='';
+    if(!q)return;
+    productos.filter(p=>p.codigo.toUpperCase().includes(q)||p.nombre.toUpperCase().includes(q))
+        .slice(0,30).forEach(p=>{
+            const d=document.createElement('div');
+            d.textContent=p.codigo+' — '+p.nombre;
+            d.onclick=()=>{
+                document.getElementById('habCodigo').value=p.codigo;
+                document.getElementById('habNombre').value=p.nombre;
+                document.getElementById('habBusqueda').value=p.codigo;
+                box.innerHTML='';
+                actualizarHablador();
+            };
+            box.appendChild(d);
+        });
+}
+
+function alternarNegritaHab(){
+    const t=habladorEstado.seleccionado;
+    habladorEstado.negrita[t]=!habladorEstado.negrita[t];
+    aplicarControlesHab();
+    cargarControlesHab();
+}
+
+function iniciarArrastreHab(e,tipo){
+    seleccionarHab(tipo);
+    const el=habEl(tipo);
+    const r=document.getElementById('habHoja').getBoundingClientRect();
+    habladorEstado.arrastrando=true;
+    habladorEstado.offsetX=e.clientX-r.left-el.offsetLeft;
+    habladorEstado.offsetY=e.clientY-r.top-el.offsetTop;
+    e.preventDefault();
+}
+function moverHab(e){
+    if(!habladorEstado.arrastrando)return;
+    const el=habEl(habladorEstado.seleccionado);
+    const r=document.getElementById('habHoja').getBoundingClientRect();
+    let x=habPxMm(e.clientX-r.left-habladorEstado.offsetX);
+    let y=habPxMm(e.clientY-r.top-habladorEstado.offsetY);
+    const maxX=215.9-habPxMm(el.offsetWidth);
+    const maxY=279.4-habPxMm(el.offsetHeight);
+    el.style.left=Math.max(0,Math.min(maxX,x))+'mm';
+    el.style.top=Math.max(0,Math.min(maxY,y))+'mm';
+    document.getElementById('habX').value=Math.round(Math.max(0,Math.min(maxX,x)));
+    document.getElementById('habY').value=Math.round(Math.max(0,Math.min(maxY,y)));
+}
+function terminarArrastreHab(){habladorEstado.arrastrando=false;}
+
+function centrarXHab(){
+    const el=habEl(habladorEstado.seleccionado);
+    const x=(215.9-habPxMm(el.offsetWidth))/2;
+    el.style.left=x+'mm';
+    document.getElementById('habX').value=Math.round(x);
+}
+
+function limpiarHablador(){
+    document.getElementById('habBusqueda').value='';
+    document.getElementById('habCodigo').value='';
+    document.getElementById('habNombre').value='';
+    document.getElementById('habCantidad').value=1;
+    document.getElementById('habResultados').innerHTML='';
+    actualizarHablador();
+}
+function imprimirHablador(){
+    document.body.classList.add('hablador-imprimir');
+    window.print();
+    setTimeout(()=>document.body.classList.remove('hablador-imprimir'),700);
+}
+
+document.addEventListener('DOMContentLoaded',()=>{
+    document.getElementById('habBusqueda').addEventListener('input',buscarHab);
+    ['habCodigo','habNombre','habCantidad'].forEach(id=>
+        document.getElementById(id).addEventListener('input',actualizarHablador));
+    document.getElementById('habElemento').addEventListener('change',e=>seleccionarHab(e.target.value));
+    ['habTamano','habFuente','habX','habY','habAncho','habAlto'].forEach(id=>
+        document.getElementById(id).addEventListener('input',aplicarControlesHab));
+    document.getElementById('habNegrita').addEventListener('click',alternarNegritaHab);
+    document.getElementById('habCentrar').addEventListener('click',centrarXHab);
+    ['habMargenT','habMargenB','habMargenL','habMargenR'].forEach(id=>
+        document.getElementById(id).addEventListener('input',actualizarMargenHab));
+
+    ['nombre','cantidad','codigo'].forEach(tipo=>{
+        habEl(tipo).addEventListener('mousedown',e=>iniciarArrastreHab(e,tipo));
+    });
+    document.addEventListener('mousemove',moverHab);
+    document.addEventListener('mouseup',terminarArrastreHab);
+
+    actualizarHablador();
+});
+
+
+/* HABLADOR: movimiento + redimensionamiento con el mouse */
+(function(){
+  let interaccion = null;
+
+  function seleccionarVisual(el){
+    document.querySelectorAll('.hablador-elemento').forEach(x =>
+      x.classList.toggle('seleccionado', x === el)
+    );
+  }
+
+  function comenzar(e, el){
+    if(e.button !== 0) return;
+    seleccionarVisual(el);
+
+    const esResize = e.target.classList.contains('hablador-resize');
+    const r = el.getBoundingClientRect();
+
+    interaccion = {
+      tipo: esResize ? 'resize' : 'move',
+      el: el,
+      sx: e.clientX,
+      sy: e.clientY,
+      left: r.left,
+      top: r.top,
+      width: r.width,
+      height: r.height
+    };
+
+    e.preventDefault();
+    e.stopPropagation();
+    document.addEventListener('mousemove', mover);
+    document.addEventListener('mouseup', terminar);
+  }
+
+  function mover(e){
+    if(!interaccion) return;
+
+    const d = interaccion;
+    const hoja = document.getElementById('habHoja');
+    if(!hoja) return;
+    const hr = hoja.getBoundingClientRect();
+
+    if(d.tipo === 'move'){
+      let left = d.left + e.clientX - d.sx;
+      let top = d.top + e.clientY - d.sy;
+      left = Math.max(hr.left, Math.min(left, hr.right - d.width));
+      top = Math.max(hr.top, Math.min(top, hr.bottom - d.height));
+      d.el.style.left = (left - hr.left) + 'px';
+      d.el.style.top = (top - hr.top) + 'px';
+    } else {
+      const minW = 10 * (hr.width / 215.9);
+      const minH = 5 * (hr.height / 279.4);
+      let width = Math.max(minW, d.width + e.clientX - d.sx);
+      let height = Math.max(minH, d.height + e.clientY - d.sy);
+      width = Math.min(width, hr.right - d.el.getBoundingClientRect().left);
+      height = Math.min(height, hr.bottom - d.el.getBoundingClientRect().top);
+      d.el.style.width = width + 'px';
+      d.el.style.height = height + 'px';
+    }
+
+    if(typeof cargarControlesHab === 'function') cargarControlesHab();
+    if(typeof actualizarHablador === 'function') actualizarHablador();
+  }
+
+  function terminar(){
+    document.removeEventListener('mousemove', mover);
+    document.removeEventListener('mouseup', terminar);
+    interaccion = null;
+  }
+
+  window.iniciarArrastreHab = comenzar;
+
+  document.addEventListener('DOMContentLoaded', function(){
+    document.querySelectorAll('.hablador-elemento').forEach(el => {
+      el.addEventListener('mousedown', function(e){ comenzar(e, el); });
+    });
+  });
+})();
 </script>
 
 </body>
